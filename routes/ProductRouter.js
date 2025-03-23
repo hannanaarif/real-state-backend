@@ -1,22 +1,29 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 import { 
     addproperty, 
     listproperty, 
     removeproperty, 
     updateproperty, 
-    singleproperty,
+    singleproperty, 
     getSellerProperties, 
     buyProperty
 } from '../controller/productcontroller.js';
 
 const router = express.Router();
 
+// Add this before setting up multer
+const uploadDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'h:/Project/Real_State/Real-Estate-Website/backend/uploads/');
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname);
